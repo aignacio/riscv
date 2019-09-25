@@ -49,12 +49,14 @@ module riscv_id_stage
   parameter SHARED_FP         =  0,
   parameter SHARED_DSP_MULT   =  0,
   parameter SHARED_INT_DIV    =  0,
+  parameter SHARED_INT_MULT   =  0,
   parameter SHARED_FP_DIVSQRT =  0,
   parameter WAPUTYPE          =  0,
   parameter APU_NARGS_CPU     =  3,
   parameter APU_WOP_CPU       =  6,
   parameter APU_NDSFLAGS_CPU  = 15,
-  parameter APU_NUSFLAGS_CPU  =  5
+  parameter APU_NUSFLAGS_CPU  =  5,
+  parameter CUSTOM_VALGRIND   =  1
 )
 (
     input  logic        clk,
@@ -830,6 +832,8 @@ module riscv_id_stage
       // flags
       always_comb begin
         unique case (apu_flags_src)
+          APU_FLAGS_VALGRIND:
+            apu_flags = '0;
           APU_FLAGS_INT_MULT:
             apu_flags = {7'h0 , mult_imm_id, mult_signed_mode, mult_sel_subword};
           APU_FLAGS_DSP_MULT:
@@ -1018,9 +1022,11 @@ module riscv_id_stage
       .SHARED_FP           ( SHARED_FP            ),
       .SHARED_DSP_MULT     ( SHARED_DSP_MULT      ),
       .SHARED_INT_DIV      ( SHARED_INT_DIV       ),
+      .SHARED_INT_MULT     ( SHARED_INT_MULT      ),
       .SHARED_FP_DIVSQRT   ( SHARED_FP_DIVSQRT    ),
       .WAPUTYPE            ( WAPUTYPE             ),
-      .APU_WOP_CPU         ( APU_WOP_CPU          )
+      .APU_WOP_CPU         ( APU_WOP_CPU          ),
+      .CUSTOM_VALGRIND     ( CUSTOM_VALGRIND      )
       )
   decoder_i
   (

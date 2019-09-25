@@ -38,8 +38,11 @@ package apu_core_package;
    parameter APU_FLAGS_FP    = 2;
    parameter APU_FLAGS_FPNEW = 3;
 
+   parameter APU_FLAGS_VALGRIND = 4;
+
    // DSP-Mult
    parameter PIPE_REG_DSP_MULT  = 1;
+
    parameter APU_FLAGS_DSP_MULT = 0;
 
    // Int-Mult

@@ -58,11 +58,14 @@ parameter OPCODE_LOAD_FP   = 7'h07;
 // parameter OPCODE_CUST1     = 7'h2b
 
 // PULP custom
-parameter OPCODE_LOAD_POST  = 7'h0b;
-parameter OPCODE_STORE_POST = 7'h2b;
-parameter OPCODE_PULP_OP    = 7'h5b;
+parameter OPCODE_LOAD_POST  = 7'h0b; // Custom 0
+parameter OPCODE_STORE_POST = 7'h2b; // Custom 1
+parameter OPCODE_PULP_OP    = 7'h5b; // Custom 2
 parameter OPCODE_VECOP      = 7'h57;
-parameter OPCODE_HWLOOP     = 7'h7b;
+parameter OPCODE_HWLOOP     = 7'h7b; // Custom 3
+parameter OPCODE_VALGRIND   = 7'h7F; // Custom Instruction
+
+//parameter OPCODE_HWLOOP     = 7'h7b;
 
 parameter REGC_S1   = 2'b10;
 parameter REGC_S4   = 2'b00;

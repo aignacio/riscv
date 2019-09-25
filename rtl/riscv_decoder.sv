@@ -36,10 +36,12 @@ module riscv_decoder
   parameter PULP_SECURE       = 0,
   parameter SHARED_FP         = 0,
   parameter SHARED_DSP_MULT   = 0,
+  parameter SHARED_INT_MULT   = 0,
   parameter SHARED_INT_DIV    = 0,
   parameter SHARED_FP_DIVSQRT = 0,
   parameter WAPUTYPE          = 0,
-  parameter APU_WOP_CPU       = 6
+  parameter APU_WOP_CPU       = 6,
+  parameter CUSTOM_VALGRIND   = 1
 )
 (
   // singals running to/from controller
@@ -158,7 +160,10 @@ module riscv_decoder
   localparam APUTYPE_DSP_MULT   = (SHARED_DSP_MULT)       ? 0 : 0;
   localparam APUTYPE_INT_MULT   = (SHARED_INT_MULT)       ? SHARED_DSP_MULT : 0;
   localparam APUTYPE_INT_DIV    = (SHARED_INT_DIV)        ? SHARED_DSP_MULT + SHARED_INT_MULT : 0;
-  localparam APUTYPE_FP         = (SHARED_FP)             ? SHARED_DSP_MULT + SHARED_INT_MULT + SHARED_INT_DIV : 0;
+  localparam APUTYPE_VALGRIND   = (CUSTOM_VALGRIND)       ? SHARED_INT_DIV + SHARED_DSP_MULT + SHARED_INT_MULT : 0;
+
+  localparam APUTYPE_FP         = (SHARED_FP)             ? CUSTOM_VALGRIND + SHARED_DSP_MULT + SHARED_INT_MULT + SHARED_INT_DIV : 0;
+
   localparam APUTYPE_ADDSUB     = (SHARED_FP)             ? ((SHARED_FP==1) ? APUTYPE_FP   : APUTYPE_FP)   : 0;
   localparam APUTYPE_MULT       = (SHARED_FP)             ? ((SHARED_FP==1) ? APUTYPE_FP+1 : APUTYPE_FP)   : 0;
   localparam APUTYPE_CAST       = (SHARED_FP)             ? ((SHARED_FP==1) ? APUTYPE_FP+2 : APUTYPE_FP)   : 0;
@@ -1942,10 +1947,19 @@ module riscv_decoder
           illegal_insn_o = 1'b1;
       end
 
-      OPCODE_PULP_OP: begin  // PULP specific ALU instructions with three source operands
-        regfile_alu_we = 1'b1;
-        rega_used_o    = 1'b1;
-        regb_used_o    = 1'b1;
+      OPCODE_PULP_OP: begin  // PULP specific ALU instructions with three source operands - CUSTOM_2
+        regfile_alu_we  = 1'b1;
+        rega_used_o     = 1'b1;
+        regb_used_o     = 1'b1;
+
+        // regc_mux_o      = REGC_ZERO;
+        // mult_int_en     = 1'b0;
+        // mult_dot_en     = 1'b0;
+        // apu_en          = 1'b1;
+        // apu_flags_src_o = APU_FLAGS_INT_MULT;
+        // apu_op_o        = mult_operator_o;
+        // apu_type_o      = APUTYPE_VALGRIND;
+        // apu_lat_o       = 2'h1;
 
         case (instr_rdata_i[13:12])
           2'b00: begin // multiply with subword selection
@@ -2238,6 +2252,17 @@ module riscv_decoder
         endcase
       end
 
+      OPCODE_VALGRIND: begin
+        rega_used_o     = 1'b1;
+        regb_used_o     = 1'b1;
+        regc_used_o     = 1'b0;
+
+        apu_en          = 1'b1;
+        apu_flags_src_o = APU_FLAGS_VALGRIND;
+        apu_op_o        = 6'h3F;
+        apu_type_o      = APUTYPE_VALGRIND;
+        apu_lat_o       = 2'h1;
+      end
 
       ////////////////////////////////////////////////
       //  ____  ____  _____ ____ ___    _    _      //

@@ -48,8 +48,10 @@ module riscv_core
   parameter FP_DIVSQRT          =  0,
   parameter SHARED_FP           =  0,
   parameter SHARED_DSP_MULT     =  0,
+  parameter SHARED_INT_MULT     =  0,
   parameter SHARED_INT_DIV      =  0,
   parameter SHARED_FP_DIVSQRT   =  0,
+  parameter CUSTOM_VALGRIND     =  1,
   parameter WAPUTYPE            =  0,
   parameter APU_NARGS_CPU       =  3,
   parameter APU_WOP_CPU         =  6,
@@ -546,12 +548,14 @@ module riscv_core
     .SHARED_FP                    ( SHARED_FP            ),
     .SHARED_DSP_MULT              ( SHARED_DSP_MULT      ),
     .SHARED_INT_DIV               ( SHARED_INT_DIV       ),
+    .SHARED_INT_MULT              ( SHARED_INT_MULT      ),
     .SHARED_FP_DIVSQRT            ( SHARED_FP_DIVSQRT    ),
     .WAPUTYPE                     ( WAPUTYPE             ),
     .APU_NARGS_CPU                ( APU_NARGS_CPU        ),
     .APU_WOP_CPU                  ( APU_WOP_CPU          ),
     .APU_NDSFLAGS_CPU             ( APU_NDSFLAGS_CPU     ),
-    .APU_NUSFLAGS_CPU             ( APU_NUSFLAGS_CPU     )
+    .APU_NUSFLAGS_CPU             ( APU_NUSFLAGS_CPU     ),
+    .CUSTOM_VALGRIND              ( CUSTOM_VALGRIND      )
   )
   id_stage_i
   (
